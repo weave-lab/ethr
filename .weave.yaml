@@ -10,9 +10,9 @@ deploy:
     - name: ethr
       ports:
       - name: tcp
-        number: 8888
+        number: 9999
       - name: udp
-        number: 8888
+        number: 9999
         protocol: UDP
     resources:
       scaling:
