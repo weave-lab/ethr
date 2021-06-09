@@ -1,8 +1,6 @@
-FROM golang:1.13
+FROM scratch
 
-WORKDIR /app
+ADD ethr /
 
-ADD ./ /app
-
-RUN mkdir /out && \
-    go build .
+COPY .weave.yaml /
+CMD ["/ethr"]
