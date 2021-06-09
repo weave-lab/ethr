@@ -17,6 +17,8 @@ deploy:
     resources:
       scaling:
         replicas: 1
+    livenessProbe: {}
+    readinessProbe: {}
     #ingress:
     #- host: ethr.weavelab.ninja
     #  public: true
