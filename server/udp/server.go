@@ -20,7 +20,7 @@ func Serve(ctx context.Context, cfg *server.Config, h Handler) error {
 	}
 	l, err := net.ListenUDP(ethr.UDPVersion(cfg.IPVersion), udpAddr)
 	if err != nil {
-		return fmt.Errorf("error listening on %s for UDP pkt/s tests: %w", cfg.LocalPort, err)
+		return fmt.Errorf("error listening on %d for UDP pkt/s tests: %w", cfg.LocalPort, err)
 	}
 
 	// Set socket buffer to 4MB per CPU so we can queue 4MB per CPU in case Ethr is not
