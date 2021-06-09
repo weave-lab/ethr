@@ -19,12 +19,12 @@ deploy:
         replicas: 1
     livenessProbe: {}
     readinessProbe: {}
-    #ingress:
-    #- host: ethr.weavelab.ninja
-    #  public: true
-    #  paths:
-    #  - path: /
-    #    serviceName: ethr
-    #    servicePort: 8888
+    ingress:
+    - host: ethr.weavelab.ninja
+      public: true
+      paths:
+      - path: /
+        serviceName: ethr
+        servicePort: 9999
     #featureFlags:
     #  auto-deploy: true
