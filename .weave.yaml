@@ -13,7 +13,7 @@ deploy:
         number: 8888
       - name: udp
         number: 8888
-        protocol: udp
+        protocol: UDP
     resources:
       scaling:
         replicas: 1
