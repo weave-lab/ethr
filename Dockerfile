@@ -3,4 +3,4 @@ FROM scratch
 ADD ethr /
 
 COPY .weave.yaml /
-CMD ["/ethr", "-s", "-no"]
+CMD ["/ethr", "-s", "-no", "-4"]
