@@ -180,21 +180,21 @@ func (t *Tui) Paint(nanos uint64) {
 	}
 	tcpActive, udpActive, icmpActive := false, false, false
 	for _, s := range sessions {
-		tcpResults := t.getTestResults(&s, ethr.TCP, t.tcpStats)
+		tcpResults := t.getTestResults(s, ethr.TCP, t.tcpStats)
 		if len(tcpResults) > 0 {
 			t.res.addTblRow(tcpResults)
 			t.res.addTblSpr()
 			tcpActive = true
 		}
 
-		udpResults := t.getTestResults(&s, ethr.UDP, t.udpStats)
+		udpResults := t.getTestResults(s, ethr.UDP, t.udpStats)
 		if len(udpResults) > 0 {
 			t.res.addTblRow(udpResults)
 			t.res.addTblSpr()
 			udpActive = true
 		}
 
-		icmpResults := t.getTestResults(&s, ethr.ICMP, t.icmpStats)
+		icmpResults := t.getTestResults(s, ethr.ICMP, t.icmpStats)
 		if len(icmpResults) > 0 {
 			t.res.addTblRow(icmpResults)
 			t.res.addTblSpr()

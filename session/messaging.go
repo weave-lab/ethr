@@ -26,7 +26,7 @@ func CreateSynMsg(testID ethr.TestID, clientParam ethr.ClientParams) (msg *ethr.
 	return
 }
 
-func (s Session) HandshakeWithServer(test *Test, conn net.Conn) error {
+func (s *Session) HandshakeWithServer(test *Test, conn net.Conn) error {
 	msg := CreateSynMsg(test.ID, test.ClientParam)
 	err := s.Send(conn, msg)
 	if err != nil {
@@ -42,7 +42,7 @@ func (s Session) HandshakeWithServer(test *Test, conn net.Conn) error {
 	return nil
 }
 
-func (s Session) HandshakeWithClient(conn net.Conn) (testID ethr.TestID, clientParam ethr.ClientParams, err error) {
+func (s *Session) HandshakeWithClient(conn net.Conn) (testID ethr.TestID, clientParam ethr.ClientParams, err error) {
 	msg, err := s.Receive(conn)
 	if err != nil {
 		return
@@ -58,7 +58,7 @@ func (s Session) HandshakeWithClient(conn net.Conn) (testID ethr.TestID, clientP
 	return
 }
 
-func (s Session) Receive(conn net.Conn) (msg *ethr.Msg, err error) {
+func (s *Session) Receive(conn net.Conn) (msg *ethr.Msg, err error) {
 	msg = &ethr.Msg{}
 	msg.Type = ethr.Inv
 	msgBytes := make([]byte, 4)
@@ -82,12 +82,12 @@ func (s Session) Receive(conn net.Conn) (msg *ethr.Msg, err error) {
 	return
 }
 
-func (s Session) ReceiveFromBuffer(msgBytes []byte) (msg *ethr.Msg) {
+func (s *Session) ReceiveFromBuffer(msgBytes []byte) (msg *ethr.Msg) {
 	msg = decodeMsg(msgBytes)
 	return
 }
 
-func (s Session) Send(conn net.Conn, msg *ethr.Msg) (err error) {
+func (s *Session) Send(conn net.Conn, msg *ethr.Msg) (err error) {
 	msgBytes, err := encodeMsg(msg)
 	if err != nil {
 		Logger.Debug("Error sending message on control channel. Message: %v, Error: %v", msg, err)

@@ -32,13 +32,13 @@ func (u *RawUI) Paint(seconds uint64) {
 		return
 	}
 	for _, s := range sessions {
-		tcpResults := u.getTestResults(&s, ethr.TCP, u.tcpStats)
+		tcpResults := u.getTestResults(s, ethr.TCP, u.tcpStats)
 		u.printTestResults(tcpResults)
 
-		udpResults := u.getTestResults(&s, ethr.UDP, u.udpStats)
+		udpResults := u.getTestResults(s, ethr.UDP, u.udpStats)
 		u.printTestResults(udpResults)
 
-		icmpResults := u.getTestResults(&s, ethr.ICMP, u.icmpStats)
+		icmpResults := u.getTestResults(s, ethr.ICMP, u.icmpStats)
 		u.printTestResults(icmpResults)
 	}
 

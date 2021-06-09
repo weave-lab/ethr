@@ -21,12 +21,12 @@ var Logger ethr.Logger
 var sessions = make(map[string]*Session)
 var sessionLock sync.RWMutex
 
-func GetSessions() []Session {
-	out := make([]Session, 0, len(sessions))
+func GetSessions() []*Session {
+	out := make([]*Session, 0, len(sessions))
 	sessionLock.RLock()
 	defer sessionLock.RUnlock()
 	for _, v := range sessions {
-		out = append(out, *v)
+		out = append(out, v)
 	}
 	return out
 }
