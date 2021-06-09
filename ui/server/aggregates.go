@@ -1,7 +1,7 @@
 package server
 
 import (
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/ui"
 )
 
@@ -19,7 +19,7 @@ func NewAggregateStats() *AggregateStats {
 	}
 }
 
-func (a *AggregateStats) ToString(protocol ethr.Protocol) (out []string) {
+func (a *AggregateStats) ToString(protocol lib.Protocol) (out []string) {
 	if a == nil {
 		return
 	}

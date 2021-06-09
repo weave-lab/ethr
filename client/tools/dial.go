@@ -7,22 +7,22 @@ import (
 	"syscall"
 	"time"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 )
 
-func (t Tools) Dial(p ethr.Protocol, dialAddr string, localIP net.IP, localPort uint16, ttl int, tos int) (net.Conn, error) {
+func (t Tools) Dial(p lib.Protocol, dialAddr string, localIP net.IP, localPort uint16, ttl int, tos int) (net.Conn, error) {
 	var lAddr net.Addr
 	var network string
 	var err error
-	if p == ethr.TCP {
-		network = ethr.TCPVersion(t.IPVersion)
+	if p == lib.TCP {
+		network = lib.TCPVersion(t.IPVersion)
 		lAddr = &net.TCPAddr{
 			IP:   localIP,
 			Port: int(localPort),
 		}
 		//lAddr, err = net.ResolveTCPAddr(network, config.GetAddrString(localIP, localPort))
-	} else if p == ethr.UDP {
-		network = ethr.UDPVersion(t.IPVersion)
+	} else if p == lib.UDP {
+		network = lib.UDPVersion(t.IPVersion)
 		lAddr = &net.UDPAddr{
 			IP:   localIP,
 			Port: int(localPort),
@@ -66,21 +66,21 @@ func (t Tools) Dial(p ethr.Protocol, dialAddr string, localIP net.IP, localPort 
 	return nil, fmt.Errorf("unknown connection type created")
 }
 
-func (t Tools) setTTL(fd uintptr, ttl int, ipVersion ethr.IPVersion) error {
+func (t Tools) setTTL(fd uintptr, ttl int, ipVersion lib.IPVersion) error {
 	if ttl == 0 {
 		return nil
 	}
-	if ipVersion == ethr.IPv4 {
+	if ipVersion == lib.IPv4 {
 		return t.setSockOptInt(fd, syscall.IPPROTO_IP, syscall.IP_TTL, ttl)
 	}
 	return t.setSockOptInt(fd, syscall.IPPROTO_IPV6, syscall.IPV6_UNICAST_HOPS, ttl)
 }
 
-func (t Tools) setTOS(fd uintptr, tos int, ipVersion ethr.IPVersion) error {
+func (t Tools) setTOS(fd uintptr, tos int, ipVersion lib.IPVersion) error {
 	if tos == 0 {
 		return nil
 	}
-	if ipVersion == ethr.IPv4 {
+	if ipVersion == lib.IPv4 {
 		return t.setSockOptInt(fd, syscall.IPPROTO_IP, syscall.IP_TOS, tos)
 	}
 	return t.setTClass(fd, tos)

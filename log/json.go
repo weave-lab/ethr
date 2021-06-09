@@ -9,7 +9,7 @@ import (
 	"net"
 	"os"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 )
 
 type JSONLogger struct {
@@ -82,7 +82,7 @@ func (l *JSONLogger) Debug(format string, args ...interface{}) {
 	}
 }
 
-func (l *JSONLogger) TestResult(tt ethr.TestType, success bool, protocol ethr.Protocol, rIP net.IP, rPort uint16, result interface{}) {
+func (l *JSONLogger) TestResult(tt lib.TestType, success bool, protocol lib.Protocol, rIP net.IP, rPort uint16, result interface{}) {
 	if l.active {
 		resultJSON, _ := json.Marshal(NewTestResultLog(tt, success, protocol, rIP, rPort, result))
 		l.toLog <- string(resultJSON)

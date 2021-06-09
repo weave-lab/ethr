@@ -1,4 +1,4 @@
-package ethr
+package lib
 
 type MsgType uint32
 

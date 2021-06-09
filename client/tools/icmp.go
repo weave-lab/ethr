@@ -10,7 +10,7 @@ import (
 	"golang.org/x/net/ipv6"
 
 	"golang.org/x/net/icmp"
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 )
 
 func (t Tools) ReceiveICMPFromPeer(pc net.PacketConn, timeout time.Duration, neededPeer string) (*icmp.Message, net.Addr, error) {
@@ -33,7 +33,7 @@ func (t Tools) ReceiveICMPFromPeer(pc net.PacketConn, timeout time.Duration, nee
 		if neededPeer != "" && peer.String() != neededPeer {
 			continue
 		}
-		icmpMsg, err := icmp.ParseMessage(ethr.ICMPProtocolNumber(t.IPVersion), b[:n])
+		icmpMsg, err := icmp.ParseMessage(lib.ICMPProtocolNumber(t.IPVersion), b[:n])
 		if err != nil {
 			t.Logger.Debug("Failed to parse ICMP message: %w", err)
 			continue
@@ -70,10 +70,10 @@ func (t Tools) SendICMP(pc net.PacketConn, dest net.Addr, ttl int, timeout time.
 }
 
 func (t Tools) SetICMPTTL(pc net.PacketConn, ttl int) error {
-	if t.IPVersion == ethr.IPv4 {
+	if t.IPVersion == lib.IPv4 {
 		cIPv4 := ipv4.NewPacketConn(pc)
 		return cIPv4.SetTTL(ttl)
-	} else if t.IPVersion == ethr.IPv6 {
+	} else if t.IPVersion == lib.IPv6 {
 		cIPv6 := ipv6.NewPacketConn(pc)
 		return cIPv6.SetHopLimit(ttl)
 	}
@@ -84,10 +84,10 @@ func (t Tools) setICMPToS(pc net.PacketConn, tos int) error {
 	if tos == 0 {
 		return nil
 	}
-	if t.IPVersion == ethr.IPv4 {
+	if t.IPVersion == lib.IPv4 {
 		cIPv4 := ipv4.NewPacketConn(pc)
 		return cIPv4.SetTOS(tos)
-	} else if t.IPVersion == ethr.IPv6 {
+	} else if t.IPVersion == lib.IPv6 {
 		cIPv6 := ipv6.NewPacketConn(pc)
 		return cIPv6.SetTrafficClass(tos)
 	}
@@ -102,7 +102,7 @@ func (t Tools) UnwrapICMPMessage(index int, body []byte) (*icmp.Message, error) 
 	if index < 4 {
 		return nil, fmt.Errorf("incorrect length of icmp message")
 	}
-	unwrapped, err := icmp.ParseMessage(ethr.ICMPProtocolNumber(t.IPVersion), body[index-4:])
+	unwrapped, err := icmp.ParseMessage(lib.ICMPProtocolNumber(t.IPVersion), body[index-4:])
 	if err != nil {
 		return nil, fmt.Errorf("failed to unwrap icmp packet")
 	}

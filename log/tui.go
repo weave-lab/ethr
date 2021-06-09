@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 
 	"weavelab.xyz/ethr/ui/server"
 )
@@ -49,6 +49,6 @@ func (l *TuiLogger) Debug(format string, args ...interface{}) {
 	}
 }
 
-func (l *TuiLogger) TestResult(tt ethr.TestType, success bool, protocol ethr.Protocol, rIP net.IP, rPort uint16, result interface{}) {
+func (l *TuiLogger) TestResult(tt lib.TestType, success bool, protocol lib.Protocol, rIP net.IP, rPort uint16, result interface{}) {
 	// do nothing
 }

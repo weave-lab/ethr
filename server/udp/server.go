@@ -8,17 +8,17 @@ import (
 
 	"weavelab.xyz/ethr/config"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/server"
 )
 
 func Serve(ctx context.Context, cfg *server.Config, h Handler) error {
 	addr := config.GetAddrString(cfg.LocalIP, cfg.LocalPort)
-	udpAddr, err := net.ResolveUDPAddr(ethr.UDPVersion(cfg.IPVersion), addr)
+	udpAddr, err := net.ResolveUDPAddr(lib.UDPVersion(cfg.IPVersion), addr)
 	if err != nil {
 		return fmt.Errorf("unable to resolve UDP address: %w", err)
 	}
-	l, err := net.ListenUDP(ethr.UDPVersion(cfg.IPVersion), udpAddr)
+	l, err := net.ListenUDP(lib.UDPVersion(cfg.IPVersion), udpAddr)
 	if err != nil {
 		return fmt.Errorf("error listening on %d for UDP pkt/s tests: %w", cfg.LocalPort, err)
 	}

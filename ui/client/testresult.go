@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 
 	"weavelab.xyz/ethr/session"
 )
@@ -17,7 +17,7 @@ func (u *UI) PrintTestResults(ctx context.Context, test *session.Test) {
 	var previousResult, latestResult *session.TestResult
 
 	tickInterval := 250 * time.Millisecond
-	if test.ID.Type == ethr.TestTypeBandwidth || test.ID.Type == ethr.TestTypePacketsPerSecond || test.ID.Type == ethr.TestTypeConnectionsPerSecond {
+	if test.ID.Type == lib.TestTypeBandwidth || test.ID.Type == lib.TestTypePacketsPerSecond || test.ID.Type == lib.TestTypeConnectionsPerSecond {
 		tickInterval = time.Second
 	}
 	paintTicker := time.NewTicker(tickInterval)
@@ -26,11 +26,11 @@ func (u *UI) PrintTestResults(ctx context.Context, test *session.Test) {
 		// TODO probably want this a little more accurate than rounded seconds, some things it makes sense to print more than once a second
 		u.currentPrintSeconds = uint64(time.Since(started).Seconds())
 		switch test.ID.Type {
-		case ethr.TestTypePing:
+		case lib.TestTypePing:
 			if latestResult != previousResult && latestResult != nil {
 				u.PrintPing(test, latestResult)
 			}
-		case ethr.TestTypePacketsPerSecond:
+		case lib.TestTypePacketsPerSecond:
 			if !displayedHeader {
 				u.PrintPacketsPerSecondHeader()
 				displayedHeader = true
@@ -38,7 +38,7 @@ func (u *UI) PrintTestResults(ctx context.Context, test *session.Test) {
 			if latestResult != previousResult && latestResult != nil {
 				u.PrintPacketsPerSecond(test, latestResult)
 			}
-		case ethr.TestTypeBandwidth:
+		case lib.TestTypeBandwidth:
 			if !displayedHeader {
 				u.PrintBandwidthHeader(test.ID.Protocol)
 				displayedHeader = true
@@ -46,7 +46,7 @@ func (u *UI) PrintTestResults(ctx context.Context, test *session.Test) {
 			if latestResult != previousResult && latestResult != nil {
 				u.PrintBandwidth(test, latestResult)
 			}
-		case ethr.TestTypeLatency:
+		case lib.TestTypeLatency:
 			if !displayedHeader {
 				u.PrintLatencyHeader()
 				displayedHeader = true
@@ -54,7 +54,7 @@ func (u *UI) PrintTestResults(ctx context.Context, test *session.Test) {
 			if latestResult != previousResult && latestResult != nil {
 				u.PrintLatency(test, latestResult)
 			}
-		case ethr.TestTypeConnectionsPerSecond:
+		case lib.TestTypeConnectionsPerSecond:
 			if !displayedHeader {
 				u.PrintConnectionsHeader()
 				displayedHeader = true
@@ -62,9 +62,9 @@ func (u *UI) PrintTestResults(ctx context.Context, test *session.Test) {
 			if latestResult != previousResult && latestResult != nil {
 				u.PrintConnectionsPerSecond(test, latestResult)
 			}
-		case ethr.TestTypeTraceRoute:
+		case lib.TestTypeTraceRoute:
 			fallthrough
-		case ethr.TestTypeMyTraceRoute:
+		case lib.TestTypeMyTraceRoute:
 			if !displayedHeader {
 				u.PrintTracerouteHeader(test.RemoteIP)
 				displayedHeader = true

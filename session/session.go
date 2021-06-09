@@ -6,17 +6,17 @@ import (
 	"sync"
 	"time"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 )
 
 type Session struct {
 	sync.RWMutex
-	Tests   map[ethr.TestID]*Test
+	Tests   map[lib.TestID]*Test
 	polling bool
 	done    chan struct{}
 }
 
-var Logger ethr.Logger
+var Logger lib.Logger
 
 var sessions = make(map[string]*Session)
 var sessionLock sync.RWMutex
@@ -78,7 +78,7 @@ func (s *Session) PollInactive(ctx context.Context, gap time.Duration) {
 	}
 }
 
-func CreateOrGetTest(rIP net.IP, rPort uint16, protocol ethr.Protocol, testType ethr.TestType, params ethr.ClientParams, aggregator ResultAggregator, publishInterval time.Duration) (*Test, bool) {
+func CreateOrGetTest(rIP net.IP, rPort uint16, protocol lib.Protocol, testType lib.TestType, params lib.ClientParams, aggregator ResultAggregator, publishInterval time.Duration) (*Test, bool) {
 	isNew := false
 	session := getOrCreateSession(rIP)
 	test := session.getTest(protocol, testType)
@@ -112,7 +112,7 @@ func getOrCreateSession(rIP net.IP) *Session {
 	session, found := sessions[rIP.String()]
 	if !found {
 		session = &Session{
-			Tests: make(map[ethr.TestID]*Test),
+			Tests: make(map[lib.TestID]*Test),
 			done:  make(chan struct{}),
 		}
 		sessions[rIP.String()] = session
@@ -120,7 +120,7 @@ func getOrCreateSession(rIP net.IP) *Session {
 	return session
 }
 
-func (s *Session) newTest(rIP net.IP, rPort uint16, protocol ethr.Protocol, tt ethr.TestType, clientParam ethr.ClientParams, aggregator ResultAggregator, publishInterval time.Duration) (*Test, error) {
+func (s *Session) newTest(rIP net.IP, rPort uint16, protocol lib.Protocol, tt lib.TestType, clientParam lib.ClientParams, aggregator ResultAggregator, publishInterval time.Duration) (*Test, error) {
 	Logger.Debug("New test created from %s:%d", rIP, rPort)
 	test := NewTest(s, protocol, tt, rIP, rPort, clientParam, aggregator, publishInterval)
 	s.Lock()
@@ -132,9 +132,9 @@ func (s *Session) newTest(rIP net.IP, rPort uint16, protocol ethr.Protocol, tt e
 	return test, nil
 }
 
-func (s *Session) getTest(proto ethr.Protocol, testType ethr.TestType) (test *Test) {
+func (s *Session) getTest(proto lib.Protocol, testType lib.TestType) (test *Test) {
 	s.RLock()
-	test, _ = s.Tests[ethr.TestID{Protocol: proto, Type: testType}]
+	test, _ = s.Tests[lib.TestID{Protocol: proto, Type: testType}]
 	s.RUnlock()
 	return
 }

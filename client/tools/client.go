@@ -3,12 +3,12 @@ package tools
 import (
 	"net"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 )
 
 type Tools struct {
-	IPVersion ethr.IPVersion
-	Logger    ethr.Logger
+	IPVersion lib.IPVersion
+	Logger    lib.Logger
 
 	IsExternal bool
 	RemoteIP   net.IP
@@ -18,13 +18,13 @@ type Tools struct {
 	LocalIP   net.IP
 }
 
-func NewTools(isExternal bool, rIP net.IP, rPort uint16, localPort uint16, localIP net.IP, logger ethr.Logger) (*Tools, error) {
-	var ipVersion ethr.IPVersion
+func NewTools(isExternal bool, rIP net.IP, rPort uint16, localPort uint16, localIP net.IP, logger lib.Logger) (*Tools, error) {
+	var ipVersion lib.IPVersion
 	if rIP != nil {
 		if rIP.To4() != nil {
-			ipVersion = ethr.IPv4
+			ipVersion = lib.IPv4
 		} else {
-			ipVersion = ethr.IPv6
+			ipVersion = lib.IPv6
 		}
 	}
 	//else {

@@ -3,7 +3,7 @@ package tcp
 import (
 	"net"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/session"
 	"weavelab.xyz/ethr/session/payloads"
 )
@@ -16,7 +16,7 @@ func (t Tests) TestConnectionsPerSecond(test *session.Test) {
 				case <-test.Done:
 					return
 				default:
-					conn, err := t.NetTools.Dial(ethr.TCP, test.DialAddr, t.NetTools.LocalIP, 0, 0, 0)
+					conn, err := t.NetTools.Dial(lib.TCP, test.DialAddr, t.NetTools.LocalIP, 0, 0, 0)
 					if err != nil {
 						//t.Logger.Debug("unable to dial TCP connection to %s: %w", test.DialAddr, err)
 						continue

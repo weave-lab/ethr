@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 
 	"weavelab.xyz/ethr/session"
 	"weavelab.xyz/ethr/session/payloads"
@@ -15,7 +15,7 @@ func (u *UI) PrintTraceroute(test *session.Test, result *session.TestResult) {
 	case payloads.NetworkHop:
 		fmt.Println(r)
 	case payloads.TraceRoutePayload:
-		if test.ID.Type == ethr.TestTypeMyTraceRoute && result.Success {
+		if test.ID.Type == lib.TestTypeMyTraceRoute && result.Success {
 			u.PrintTracerouteHeader(test.RemoteIP)
 			fmt.Println(r)
 		}

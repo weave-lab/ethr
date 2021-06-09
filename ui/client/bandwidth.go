@@ -7,13 +7,13 @@ import (
 
 	"weavelab.xyz/ethr/session"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/ui"
 )
 
 func (u *UI) PrintBandwidth(test *session.Test, result *session.TestResult) {
 	protocol := test.ID.Protocol
-	if protocol != ethr.TCP && protocol != ethr.UDP {
+	if protocol != lib.TCP && protocol != lib.UDP {
 		fmt.Printf("Unsupported protocol for bandwidth test: %s\n", protocol.String())
 		return
 	}
@@ -29,7 +29,7 @@ func (u *UI) PrintBandwidth(test *session.Test, result *session.TestResult) {
 			}
 		}
 		u.printBandwidthResult(protocol, "SUM", r.TotalBandwidth, r.TotalPacketsPerSecond)
-		u.Logger.TestResult(ethr.TestTypeBandwidth, true, protocol, test.RemoteIP, test.RemotePort, r)
+		u.Logger.TestResult(lib.TestTypeBandwidth, true, protocol, test.RemoteIP, test.RemotePort, r)
 	default:
 		if r != nil {
 			u.printUnknownResultType()
@@ -37,8 +37,8 @@ func (u *UI) PrintBandwidth(test *session.Test, result *session.TestResult) {
 	}
 }
 
-func (u *UI) PrintBandwidthHeader(p ethr.Protocol) {
-	if p == ethr.UDP {
+func (u *UI) PrintBandwidthHeader(p lib.Protocol) {
+	if p == lib.UDP {
 		// Printing packets only makes sense for UDP as it is a datagram protocol.
 		// For TCP, TCP itself decides how to chunk the stream to send as packets.
 		fmt.Println("- - - - - - - - - - - - - - - - - - - - - - - - - - - -")
@@ -49,8 +49,8 @@ func (u *UI) PrintBandwidthHeader(p ethr.Protocol) {
 	}
 }
 
-func (u *UI) printBandwidthResult(p ethr.Protocol, id string, bw, pps uint64) {
-	if p == ethr.UDP {
+func (u *UI) printBandwidthResult(p lib.Protocol, id string, bw, pps uint64) {
+	if p == lib.UDP {
 		fmt.Printf("[%5s]     %-5s    %03d-%03d sec   %7s   %7s\n", id, p, u.lastPrintSeconds, u.currentPrintSeconds, ui.BytesToRate(bw), ui.PpsToString(pps))
 	} else {
 		fmt.Printf("[%5s]     %-5s    %03d-%03d sec   %7s\n", id, p, u.lastPrintSeconds, u.currentPrintSeconds, ui.BytesToRate(bw))

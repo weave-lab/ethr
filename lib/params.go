@@ -1,4 +1,4 @@
-package ethr
+package lib
 
 import "time"
 

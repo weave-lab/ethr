@@ -12,7 +12,7 @@ import (
 
 	"weavelab.xyz/ethr/ui"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 )
 
 var Version = "UNKNOWN"
@@ -23,7 +23,7 @@ var (
 	Debug      bool
 	UseIPv4    bool
 	UseIPv6    bool
-	IPVersion  ethr.IPVersion
+	IPVersion  lib.IPVersion
 	Port       uint16
 	LocalIP    net.IP
 	IsServer   bool
@@ -41,9 +41,9 @@ var (
 	Gap                time.Duration
 	Iterations         int
 	NoConnectionStats  bool
-	Protocol           ethr.Protocol
+	Protocol           lib.Protocol
 	Reverse            bool
-	TestType           ethr.TestType
+	TestType           lib.TestType
 	TOS                int
 	Title              string
 	ThreadCount        int
@@ -96,11 +96,11 @@ func Init() error {
 
 	// MUST set ip version before resolving IPs to resolve properly
 	if (!UseIPv4 && !UseIPv6) || (UseIPv4 && UseIPv6) {
-		IPVersion = ethr.IPAny
+		IPVersion = lib.IPAny
 	} else if UseIPv6 {
-		IPVersion = ethr.IPv6
+		IPVersion = lib.IPv6
 	} else {
-		IPVersion = ethr.IPv4
+		IPVersion = lib.IPv4
 	}
 
 	IsExternal = ExternalClientDest != ""
@@ -131,21 +131,21 @@ func Init() error {
 		}
 	}
 
-	Protocol = ethr.ParseProtocol(*rawProtocol)
-	if Protocol == ethr.ProtocolUnknown {
+	Protocol = lib.ParseProtocol(*rawProtocol)
+	if Protocol == lib.ProtocolUnknown {
 		return fmt.Errorf("invalid protocol: %s", *rawProtocol)
 	}
 
-	TestType = ethr.ParseTestType(*rawTestType)
+	TestType = lib.ParseTestType(*rawTestType)
 	if IsServer {
-		TestType = ethr.TestTypeServer
-	} else if TestType == ethr.TestTypeUnknown {
+		TestType = lib.TestTypeServer
+	} else if TestType == lib.TestTypeUnknown {
 		return errors.New("invalid test type")
 	}
 
 	if !IsServer {
 		if *bufferLen == "" {
-			if TestType == ethr.TestTypeLatency || TestType == ethr.TestTypePacketsPerSecond {
+			if TestType == lib.TestTypeLatency || TestType == lib.TestTypePacketsPerSecond {
 				BufferSize = ui.UnitToNumber("1B")
 			} else {
 				BufferSize = ui.UnitToNumber("16KB")
@@ -203,13 +203,13 @@ func validateServerArgs() (err error) {
 	if NoConnectionStats {
 		invalidFlags = append(invalidFlags, "-ncs")
 	}
-	if Protocol != ethr.TCP {
+	if Protocol != lib.TCP {
 		invalidFlags = append(invalidFlags, "-p")
 	}
 	if Reverse {
 		invalidFlags = append(invalidFlags, "-r")
 	}
-	if TestType != ethr.TestTypeServer {
+	if TestType != lib.TestTypeServer {
 		invalidFlags = append(invalidFlags, "-t")
 	}
 	if TOS != 0 {
@@ -239,7 +239,7 @@ func validateClientArgs() error {
 	if ClientDest != "" && ExternalClientDest != "" {
 		return fmt.Errorf("invalid argument, both \"-c\" and \"-x\" cannot be specified at the same time")
 	}
-	if IsExternal && Protocol == ethr.TCP && Port == 0 {
+	if IsExternal && Protocol == lib.TCP && Port == 0 {
 		return fmt.Errorf("in external mode, port cannot be empty for TCP tests")
 	}
 
@@ -249,15 +249,15 @@ func validateClientArgs() error {
 
 	// Validate protocol, test type, and params configuration for tests
 	if IsExternal {
-		if Protocol == ethr.TCP {
+		if Protocol == lib.TCP {
 			switch TestType {
-			case ethr.TestTypePing, ethr.TestTypeConnectionsPerSecond, ethr.TestTypeTraceRoute, ethr.TestTypeMyTraceRoute:
+			case lib.TestTypePing, lib.TestTypeConnectionsPerSecond, lib.TestTypeTraceRoute, lib.TestTypeMyTraceRoute:
 			default:
 				return unsupportedTest()
 			}
-		} else if Protocol == ethr.ICMP {
+		} else if Protocol == lib.ICMP {
 			switch TestType {
-			case ethr.TestTypePing, ethr.TestTypeTraceRoute, ethr.TestTypeMyTraceRoute:
+			case lib.TestTypePing, lib.TestTypeTraceRoute, lib.TestTypeMyTraceRoute:
 			default:
 				return unsupportedTest()
 			}
@@ -265,23 +265,23 @@ func validateClientArgs() error {
 			return unsupportedTest()
 		}
 	} else {
-		if Reverse && TestType != ethr.TestTypeBandwidth {
+		if Reverse && TestType != lib.TestTypeBandwidth {
 			return fmt.Errorf("reverse mode (-r) is only supported for TCP Bandwidth tests")
 		}
 
 		switch Protocol {
-		case ethr.TCP:
+		case lib.TCP:
 			switch TestType {
-			case ethr.TestTypeBandwidth, ethr.TestTypeConnectionsPerSecond, ethr.TestTypeLatency, ethr.TestTypePing, ethr.TestTypeTraceRoute, ethr.TestTypeMyTraceRoute:
+			case lib.TestTypeBandwidth, lib.TestTypeConnectionsPerSecond, lib.TestTypeLatency, lib.TestTypePing, lib.TestTypeTraceRoute, lib.TestTypeMyTraceRoute:
 				if BufferSize > 2*ui.GIGA {
 					return fmt.Errorf("maximum tcp buffer size is 2GB")
 				}
 			default:
 				return unsupportedTest()
 			}
-		case ethr.UDP:
+		case lib.UDP:
 			switch TestType {
-			case ethr.TestTypeBandwidth, ethr.TestTypePacketsPerSecond:
+			case lib.TestTypeBandwidth, lib.TestTypePacketsPerSecond:
 				if BufferSize > 64*ui.KILO {
 					return fmt.Errorf("maximum udp buffer is 64KB")
 				}
@@ -308,7 +308,7 @@ func unsupportedTest() error {
 
 func lookupIP(remote string) (addr net.IP, err error) {
 	if remote == "localhost" || remote == "" {
-		if IPVersion == ethr.IPv4 {
+		if IPVersion == lib.IPv4 {
 			return net.IPv4(127, 0, 0, 1), nil
 		}
 		return net.IPv6loopback, nil
@@ -324,7 +324,7 @@ func lookupIP(remote string) (addr net.IP, err error) {
 		return
 	}
 	for _, ip := range ips {
-		if IPVersion == ethr.IPAny || (IPVersion == ethr.IPv4 && ip.To4() != nil) || (IPVersion == ethr.IPv6 && ip.To16() != nil) {
+		if IPVersion == lib.IPAny || (IPVersion == lib.IPv4 && ip.To4() != nil) || (IPVersion == lib.IPv6 && ip.To16() != nil) {
 			addr = ip
 			return
 		}

@@ -12,7 +12,7 @@ import (
 	"golang.org/x/net/icmp"
 	"golang.org/x/net/ipv4"
 	"golang.org/x/net/ipv6"
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 
 	"weavelab.xyz/ethr/session"
 	"weavelab.xyz/ethr/session/payloads"
@@ -91,7 +91,7 @@ func (t Tests) icmpPing(dest net.Addr, timeout time.Duration, hop int, seq int) 
 			Data: []byte(echoMsg),
 		},
 	}
-	if t.NetTools.IPVersion == ethr.IPv6 {
+	if t.NetTools.IPVersion == lib.IPv6 {
 		msg.Type = ipv6.ICMPTypeEchoRequest
 	}
 	start := time.Now()
@@ -116,7 +116,7 @@ func (t Tests) icmpPing(dest net.Addr, timeout time.Duration, hop int, seq int) 
 				if index < 4 {
 					continue
 				}
-				innerIcmpMsg, _ := icmp.ParseMessage(ethr.ICMPProtocolNumber(t.NetTools.IPVersion), body[index-4:])
+				innerIcmpMsg, _ := icmp.ParseMessage(lib.ICMPProtocolNumber(t.NetTools.IPVersion), body[index-4:])
 				switch innerIcmpMsg.Body.(type) {
 				case *icmp.Echo:
 					seq := innerIcmpMsg.Body.(*icmp.Echo).Seq

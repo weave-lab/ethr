@@ -15,7 +15,7 @@ import (
 	"golang.org/x/net/ipv4"
 	"golang.org/x/net/ipv6"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/session"
 	"weavelab.xyz/ethr/session/payloads"
 )
@@ -165,7 +165,7 @@ func (t Tests) probeHop(test *session.Test, hop int, hopIP string, hopData *payl
 	// For TCP Traceroute an ICMP error message will be sent for everything except the last connection which
 	// should establish correctly. The go routine above handles parsing the ICMP error into info used below.
 	startTime := time.Now()
-	conn, err := t.NetTools.Dial(ethr.TCP, test.DialAddr, nil, localPort, hop, 0)
+	conn, err := t.NetTools.Dial(lib.TCP, test.DialAddr, nil, localPort, hop, 0)
 
 	// assume next hop is last hop and overwrite from icmp ttl error if not
 	nextHop := basicHop{

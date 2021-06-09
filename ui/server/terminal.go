@@ -9,7 +9,7 @@ import (
 
 	tm "github.com/nsf/termbox-go"
 	"weavelab.xyz/ethr/config"
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/session"
 	"weavelab.xyz/ethr/stats"
 	"weavelab.xyz/ethr/ui"
@@ -180,21 +180,21 @@ func (t *Tui) Paint(nanos uint64) {
 	}
 	tcpActive, udpActive, icmpActive := false, false, false
 	for _, s := range sessions {
-		tcpResults := t.getTestResults(s, ethr.TCP, t.tcpStats)
+		tcpResults := t.getTestResults(s, lib.TCP, t.tcpStats)
 		if len(tcpResults) > 0 {
 			t.res.addTblRow(tcpResults)
 			t.res.addTblSpr()
 			tcpActive = true
 		}
 
-		udpResults := t.getTestResults(s, ethr.UDP, t.udpStats)
+		udpResults := t.getTestResults(s, lib.UDP, t.udpStats)
 		if len(udpResults) > 0 {
 			t.res.addTblRow(udpResults)
 			t.res.addTblSpr()
 			udpActive = true
 		}
 
-		icmpResults := t.getTestResults(s, ethr.ICMP, t.icmpStats)
+		icmpResults := t.getTestResults(s, lib.ICMP, t.icmpStats)
 		if len(icmpResults) > 0 {
 			t.res.addTblRow(icmpResults)
 			t.res.addTblSpr()
@@ -204,21 +204,21 @@ func (t *Tui) Paint(nanos uint64) {
 
 	if len(sessions) > 0 {
 		if tcpActive {
-			tcpAgg := t.tcpStats.ToString(ethr.TCP)
+			tcpAgg := t.tcpStats.ToString(lib.TCP)
 			t.tcpStats.Reset()
 			t.res.addTblRow(tcpAgg)
 			t.res.addTblSpr()
 		}
 
 		if udpActive {
-			udpAgg := t.udpStats.ToString(ethr.UDP)
+			udpAgg := t.udpStats.ToString(lib.UDP)
 			t.udpStats.Reset()
 			t.res.addTblRow(udpAgg)
 			t.res.addTblSpr()
 		}
 
 		if icmpActive {
-			icmpAgg := t.icmpStats.ToString(ethr.ICMP)
+			icmpAgg := t.icmpStats.ToString(lib.ICMP)
 			t.icmpStats.Reset()
 			t.res.addTblRow(icmpAgg)
 			t.res.addTblSpr()
@@ -264,11 +264,11 @@ func (t *Tui) Paint(nanos uint64) {
 		tm.ColorDefault, tm.ColorDefault)
 }
 
-func (t *Tui) getTestResults(s *session.Session, protocol ethr.Protocol, agg *AggregateStats) []string {
+func (t *Tui) getTestResults(s *session.Session, protocol lib.Protocol, agg *AggregateStats) []string {
 	var bwTestOn, cpsTestOn, ppsTestOn, latTestOn bool
 	var bw, cps, pps uint64
 	var lat payloads.LatencyPayload
-	test, found := s.Tests[ethr.TestID{Protocol: protocol, Type: ethr.TestTypeServer}]
+	test, found := s.Tests[lib.TestID{Protocol: protocol, Type: lib.TestTypeServer}]
 	if found && test.IsActive {
 		result := test.LatestResult()
 		if body, ok := result.Body.(payloads.ServerPayload); ok {
@@ -276,7 +276,7 @@ func (t *Tui) getTestResults(s *session.Session, protocol ethr.Protocol, agg *Ag
 			bw = body.Bandwidth
 			agg.Bandwidth += body.Bandwidth
 
-			if protocol == ethr.TCP {
+			if protocol == lib.TCP {
 				cpsTestOn = true
 				cps = body.ConnectionsPerSecond
 				agg.ConnectionsPerSecond += body.ConnectionsPerSecond
@@ -287,7 +287,7 @@ func (t *Tui) getTestResults(s *session.Session, protocol ethr.Protocol, agg *Ag
 				}
 			}
 
-			if protocol == ethr.UDP {
+			if protocol == lib.UDP {
 				ppsTestOn = true
 				pps = body.PacketsPerSecond
 				agg.PacketsPerSecond += body.PacketsPerSecond
