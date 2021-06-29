@@ -28,3 +28,25 @@ deploy:
         servicePort: 9999
     #featureFlags:
     #  auto-deploy: true
+
+  wsf-dev-0-gke1-west4:
+    service:
+    - name: ethr
+      ports:
+      - name: tcp
+        number: 9999
+      - name: udp
+        number: 9999
+        protocol: UDP
+    resources:
+      scaling:
+        replicas: 1
+    livenessProbe: {}
+    readinessProbe: {}
+    ingress:
+    - host: ethr.weavelab.ninja
+      public: true
+      paths:
+      - path: /
+        serviceName: ethr
+        servicePort: 9999
