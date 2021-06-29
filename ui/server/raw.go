@@ -62,7 +62,9 @@ func (u *RawUI) printTestHeader() {
 }
 
 func (u *RawUI) printTestResults(results []string) {
-	fmt.Printf("[%13s]  %5s  %7s  %7s  %7s  %8s\n", ui.TruncateStringFromStart(results[0], 13), results[1], results[2], results[3], results[4], results[5])
+	if len(results) > 0 {
+		fmt.Printf("[%13s]  %5s  %7s  %7s  %7s  %8s\n", ui.TruncateStringFromStart(results[0], 13), results[1], results[2], results[3], results[4], results[5])
+	}
 }
 
 func (u *RawUI) getTestResults(s *session.Session, protocol lib.Protocol, agg *AggregateStats) []string {
