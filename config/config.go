@@ -340,7 +340,7 @@ func GetAddrString(ip net.IP, port uint16) string {
 	if port == 0 {
 		return ip.String()
 	}
-	if ip.To16() != nil {
+	if IPVersion == lib.IPv6 && ip.To16() != nil {
 		return fmt.Sprintf("[%s]:%d", ip, port)
 	}
 	return fmt.Sprintf("%s:%d", ip, port)

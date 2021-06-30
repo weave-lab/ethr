@@ -3,4 +3,4 @@ FROM scratch
 ADD ethr /
 
 COPY .weave.yaml /
-CMD ["/ethr", "-s", "-no", "-4"]
+CMD ["/ethr", "-s", "-4", "-ip", "0.0.0.0", "-no"]

@@ -1,12 +1,11 @@
 package session
 
 import (
-	"fmt"
 	"net"
-	"strconv"
 	"sync"
 	"time"
 
+	"weavelab.xyz/ethr/config"
 	"weavelab.xyz/ethr/lib"
 )
 
@@ -39,7 +38,7 @@ type TestResult struct {
 type ResultAggregator func(uint64, []TestResult) TestResult
 
 func NewTest(s *Session, protocol lib.Protocol, ttype lib.TestType, rIP net.IP, rPort uint16, params lib.ClientParams, aggregator ResultAggregator, publishInterval time.Duration) *Test {
-	dialAddr := fmt.Sprintf("[%s]:%s", rIP.String(), strconv.Itoa(int(rPort)))
+	dialAddr := config.GetAddrString(rIP, rPort)
 	if protocol == lib.ICMP {
 		dialAddr = rIP.String()
 	}
