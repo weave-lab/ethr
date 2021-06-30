@@ -3,14 +3,14 @@ package log
 import (
 	"net"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 )
 
 type AggregateLogger struct {
-	loggers []ethr.Logger
+	loggers []lib.Logger
 }
 
-func NewAggregateLogger(loggers ...ethr.Logger) *AggregateLogger {
+func NewAggregateLogger(loggers ...lib.Logger) *AggregateLogger {
 	return &AggregateLogger{loggers: loggers}
 }
 
@@ -32,7 +32,7 @@ func (l *AggregateLogger) Debug(format string, args ...interface{}) {
 	}
 }
 
-func (l *AggregateLogger) TestResult(tt ethr.TestType, success bool, protocol ethr.Protocol, rIP net.IP, rPort uint16, result interface{}) {
+func (l *AggregateLogger) TestResult(tt lib.TestType, success bool, protocol lib.Protocol, rIP net.IP, rPort uint16, result interface{}) {
 	for _, logger := range l.loggers {
 		logger.TestResult(tt, success, protocol, rIP, rPort, result)
 	}

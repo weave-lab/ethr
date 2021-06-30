@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 )
 
 type STDOutLogger struct {
@@ -73,7 +73,7 @@ func (s *StaticStringer) String() string {
 	return "UNKNOWN DETAILS"
 }
 
-func (l *STDOutLogger) TestResult(tt ethr.TestType, success bool, protocol ethr.Protocol, rIP net.IP, rPort uint16, body interface{}) {
+func (l *STDOutLogger) TestResult(tt lib.TestType, success bool, protocol lib.Protocol, rIP net.IP, rPort uint16, body interface{}) {
 	if l.active {
 		status := "FAILURE"
 		if success {

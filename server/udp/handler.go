@@ -7,15 +7,15 @@ import (
 
 	"weavelab.xyz/ethr/session/payloads"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/session"
 )
 
 type Handler struct {
-	logger ethr.Logger
+	logger lib.Logger
 }
 
-func NewHandler(logger ethr.Logger) Handler {
+func NewHandler(logger lib.Logger) Handler {
 	return Handler{
 		logger: logger,
 	}
@@ -42,7 +42,7 @@ func (h Handler) HandleConn(ctx context.Context, unused *session.Test, conn net.
 			}
 
 			if udpAddr, ok := raddr.(*net.UDPAddr); ok {
-				test, isNew := session.CreateOrGetTest(udpAddr.IP, uint16(udpAddr.Port), ethr.UDP, ethr.TestTypeServer, ethr.ClientParams{}, ServerAggregator, time.Second)
+				test, isNew := session.CreateOrGetTest(udpAddr.IP, uint16(udpAddr.Port), lib.UDP, lib.TestTypeServer, lib.ClientParams{}, ServerAggregator, time.Second)
 				if isNew {
 					h.logger.Debug("Creating UDP test from server: %v, lastAccess: %v", udpAddr.String(), time.Now())
 					go test.Session.PollInactive(ctx, 100*time.Millisecond) // cleanup based on last access

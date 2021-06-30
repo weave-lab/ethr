@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"net"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/session"
 	"weavelab.xyz/ethr/session/payloads"
 	"weavelab.xyz/ethr/stats"
 )
 
-func (h Handler) TestBandwidth(ctx context.Context, test *session.Test, clientParam ethr.ClientParams, conn net.Conn) error {
+func (h Handler) TestBandwidth(ctx context.Context, test *session.Test, clientParam lib.ClientParams, conn net.Conn) error {
 	size := clientParam.BufferSize
 	buff := make([]byte, size)
 	for i := uint32(0); i < size; i++ {

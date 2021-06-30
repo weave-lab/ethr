@@ -2,10 +2,10 @@ package icmp
 
 import (
 	"weavelab.xyz/ethr/client/tools"
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 )
 
 type Tests struct {
 	NetTools *tools.Tools
-	Logger   ethr.Logger
+	Logger   lib.Logger
 }

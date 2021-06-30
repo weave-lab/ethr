@@ -7,12 +7,12 @@ import (
 
 	"weavelab.xyz/ethr/session/payloads"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/session"
 )
 
 func (t Tests) TestLatency(test *session.Test, g time.Duration) {
-	conn, err := t.NetTools.Dial(ethr.TCP, test.DialAddr, t.NetTools.LocalIP, t.NetTools.LocalPort, 0, 0)
+	conn, err := t.NetTools.Dial(lib.TCP, test.DialAddr, t.NetTools.LocalIP, t.NetTools.LocalPort, 0, 0)
 	if err != nil {
 		test.Results <- session.TestResult{
 			Success: false,

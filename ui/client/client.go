@@ -3,19 +3,19 @@ package client
 import (
 	"fmt"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 )
 
 type UI struct {
 	Title               string
 	ShowConnectionStats bool
-	Logger              ethr.Logger
+	Logger              lib.Logger
 
 	lastPrintSeconds    uint64
 	currentPrintSeconds uint64
 }
 
-func NewUI(title string, connectionStats bool, logger ethr.Logger) *UI {
+func NewUI(title string, connectionStats bool, logger lib.Logger) *UI {
 	return &UI{
 		Title:               title,
 		ShowConnectionStats: connectionStats,

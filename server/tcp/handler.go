@@ -9,15 +9,15 @@ import (
 
 	"weavelab.xyz/ethr/session/payloads"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/session"
 )
 
 type Handler struct {
-	logger ethr.Logger
+	logger lib.Logger
 }
 
-func NewHandler(logger ethr.Logger) Handler {
+func NewHandler(logger lib.Logger) Handler {
 	return Handler{
 		logger: logger,
 	}
@@ -50,10 +50,10 @@ func (h Handler) HandleConn(ctx context.Context, test *session.Test, conn net.Co
 		h.logger.Error("Failed in handshake with the client. Error: %v", err)
 		return
 	}
-	if testID.Protocol == ethr.TCP {
-		if testID.Type == ethr.TestTypeBandwidth {
+	if testID.Protocol == lib.TCP {
+		if testID.Type == lib.TestTypeBandwidth {
 			_ = h.TestBandwidth(ctx, test, clientParam, conn)
-		} else if testID.Type == ethr.TestTypeLatency {
+		} else if testID.Type == lib.TestTypeLatency {
 			_ = h.TestLatency(ctx, test, clientParam, conn)
 		}
 		session.DeleteTest(test)

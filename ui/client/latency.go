@@ -3,7 +3,7 @@ package client
 import (
 	"fmt"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 
 	"weavelab.xyz/ethr/session"
 	"weavelab.xyz/ethr/session/payloads"
@@ -13,7 +13,7 @@ func (u *UI) PrintLatency(test *session.Test, result *session.TestResult) {
 	switch r := result.Body.(type) {
 	case payloads.LatencyPayload:
 		fmt.Printf("%s\n", r)
-		u.Logger.TestResult(ethr.TestTypeLatency, result.Success, test.ID.Protocol, test.RemoteIP, test.RemotePort, r)
+		u.Logger.TestResult(lib.TestTypeLatency, result.Success, test.ID.Protocol, test.RemoteIP, test.RemotePort, r)
 	default:
 		if r != nil {
 			u.printUnknownResultType()

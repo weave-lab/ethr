@@ -9,13 +9,13 @@ import (
 
 	"weavelab.xyz/ethr/stats"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/session"
 )
 
 func (t Tests) TestBandwidth(test *session.Test) {
 	for th := uint32(0); th < test.ClientParam.NumThreads; th++ {
-		conn, err := t.NetTools.Dial(ethr.TCP, test.DialAddr, t.NetTools.LocalIP, t.NetTools.LocalPort+uint16(th), 0, 0) // referenced gTTL and gTOS which were never modified
+		conn, err := t.NetTools.Dial(lib.TCP, test.DialAddr, t.NetTools.LocalIP, t.NetTools.LocalPort+uint16(th), 0, 0) // referenced gTTL and gTOS which were never modified
 		if err != nil {
 			continue
 		}

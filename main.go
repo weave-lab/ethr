@@ -17,7 +17,7 @@ import (
 
 	"weavelab.xyz/ethr/client"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/server/tcp"
 
 	"weavelab.xyz/ethr/config"
@@ -86,7 +86,7 @@ func main() {
 	} else {
 		logger := configureLogger(ctx, nil)
 		term := cUi.NewUI(config.Title, !config.NoConnectionStats, logger)
-		params := ethr.ClientParams{
+		params := lib.ClientParams{
 			NumThreads:  uint32(config.ThreadCount),
 			BufferSize:  uint32(config.BufferSize),
 			RttCount:    uint32(config.Iterations),
@@ -118,12 +118,12 @@ func main() {
 	}
 }
 
-func configureLogger(ctx context.Context, term *serverUi.UI) ethr.Logger {
+func configureLogger(ctx context.Context, term *serverUi.UI) lib.Logger {
 	loglevel := log.LevelInfo
 	if config.Debug {
 		loglevel = log.LevelDebug
 	}
-	loggers := make([]ethr.Logger, 0)
+	loggers := make([]lib.Logger, 0)
 	if !config.NoOutput {
 		fileLogger, err := log.NewJSONLogger(config.OutputFile, loglevel, config.LogBufferSize)
 		if err != nil {

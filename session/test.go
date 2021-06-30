@@ -1,24 +1,23 @@
 package session
 
 import (
-	"fmt"
 	"net"
-	"strconv"
 	"sync"
 	"time"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/config"
+	"weavelab.xyz/ethr/lib"
 )
 
 type Test struct {
-	ID          ethr.TestID
+	ID          lib.TestID
 	IsActive    bool
 	IsDormant   bool
 	Session     *Session
 	RemoteIP    net.IP
 	RemotePort  uint16
 	DialAddr    string
-	ClientParam ethr.ClientParams
+	ClientParam lib.ClientParams
 	Results     chan TestResult
 	Done        chan struct{}
 	LastAccess  time.Time
@@ -38,14 +37,14 @@ type TestResult struct {
 
 type ResultAggregator func(uint64, []TestResult) TestResult
 
-func NewTest(s *Session, protocol ethr.Protocol, ttype ethr.TestType, rIP net.IP, rPort uint16, params ethr.ClientParams, aggregator ResultAggregator, publishInterval time.Duration) *Test {
-	dialAddr := fmt.Sprintf("[%s]:%s", rIP.String(), strconv.Itoa(int(rPort)))
-	if protocol == ethr.ICMP {
+func NewTest(s *Session, protocol lib.Protocol, ttype lib.TestType, rIP net.IP, rPort uint16, params lib.ClientParams, aggregator ResultAggregator, publishInterval time.Duration) *Test {
+	dialAddr := config.GetAddrString(rIP, rPort)
+	if protocol == lib.ICMP {
 		dialAddr = rIP.String()
 	}
 	return &Test{
 		Session: s,
-		ID: ethr.TestID{
+		ID: lib.TestID{
 			Protocol: protocol,
 			Type:     ttype,
 		},

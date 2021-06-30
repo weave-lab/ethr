@@ -7,12 +7,12 @@ import (
 	"net"
 	"time"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/session"
 	"weavelab.xyz/ethr/session/payloads"
 )
 
-func (h Handler) TestLatency(ctx context.Context, test *session.Test, clientParam ethr.ClientParams, conn net.Conn) error {
+func (h Handler) TestLatency(ctx context.Context, test *session.Test, clientParam lib.ClientParams, conn net.Conn) error {
 	bytes := make([]byte, clientParam.BufferSize)
 	rttCount := clientParam.RttCount
 	latencyNumbers := make([]time.Duration, rttCount)

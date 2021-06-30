@@ -9,24 +9,24 @@ import (
 	"net"
 	"os"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 )
 
-func CreateAckMsg() (msg *ethr.Msg) {
-	msg = &ethr.Msg{Version: 0, Type: ethr.Ack}
-	msg.Ack = &ethr.MsgAck{}
+func CreateAckMsg() (msg *lib.Msg) {
+	msg = &lib.Msg{Version: 0, Type: lib.Ack}
+	msg.Ack = &lib.MsgAck{}
 	return
 }
 
-func CreateSynMsg(testID ethr.TestID, clientParam ethr.ClientParams) (msg *ethr.Msg) {
-	msg = &ethr.Msg{Version: 0, Type: ethr.Syn}
-	msg.Syn = &ethr.MsgSyn{}
+func CreateSynMsg(testID lib.TestID, clientParam lib.ClientParams) (msg *lib.Msg) {
+	msg = &lib.Msg{Version: 0, Type: lib.Syn}
+	msg.Syn = &lib.MsgSyn{}
 	msg.Syn.TestID = testID
 	msg.Syn.ClientParam = clientParam
 	return
 }
 
-func (s Session) HandshakeWithServer(test *Test, conn net.Conn) error {
+func (s *Session) HandshakeWithServer(test *Test, conn net.Conn) error {
 	msg := CreateSynMsg(test.ID, test.ClientParam)
 	err := s.Send(conn, msg)
 	if err != nil {
@@ -36,18 +36,18 @@ func (s Session) HandshakeWithServer(test *Test, conn net.Conn) error {
 	if err != nil {
 		return err
 	}
-	if resp.Type != ethr.Ack {
+	if resp.Type != lib.Ack {
 		return fmt.Errorf("failed to receive ACK message: %w", os.ErrInvalid)
 	}
 	return nil
 }
 
-func (s Session) HandshakeWithClient(conn net.Conn) (testID ethr.TestID, clientParam ethr.ClientParams, err error) {
+func (s *Session) HandshakeWithClient(conn net.Conn) (testID lib.TestID, clientParam lib.ClientParams, err error) {
 	msg, err := s.Receive(conn)
 	if err != nil {
 		return
 	}
-	if msg.Type != ethr.Syn {
+	if msg.Type != lib.Syn {
 		err = os.ErrInvalid
 		return
 	}
@@ -58,9 +58,9 @@ func (s Session) HandshakeWithClient(conn net.Conn) (testID ethr.TestID, clientP
 	return
 }
 
-func (s Session) Receive(conn net.Conn) (msg *ethr.Msg, err error) {
-	msg = &ethr.Msg{}
-	msg.Type = ethr.Inv
+func (s *Session) Receive(conn net.Conn) (msg *lib.Msg, err error) {
+	msg = &lib.Msg{}
+	msg.Type = lib.Inv
 	msgBytes := make([]byte, 4)
 	_, err = io.ReadFull(conn, msgBytes)
 	if err != nil {
@@ -82,12 +82,12 @@ func (s Session) Receive(conn net.Conn) (msg *ethr.Msg, err error) {
 	return
 }
 
-func (s Session) ReceiveFromBuffer(msgBytes []byte) (msg *ethr.Msg) {
+func (s *Session) ReceiveFromBuffer(msgBytes []byte) (msg *lib.Msg) {
 	msg = decodeMsg(msgBytes)
 	return
 }
 
-func (s Session) Send(conn net.Conn, msg *ethr.Msg) (err error) {
+func (s *Session) Send(conn net.Conn, msg *lib.Msg) (err error) {
 	msgBytes, err := encodeMsg(msg)
 	if err != nil {
 		Logger.Debug("Error sending message on control channel. Message: %v, Error: %v", msg, err)
@@ -107,19 +107,19 @@ func (s Session) Send(conn net.Conn, msg *ethr.Msg) (err error) {
 	return err
 }
 
-func decodeMsg(msgBytes []byte) (msg *ethr.Msg) {
-	msg = &ethr.Msg{}
+func decodeMsg(msgBytes []byte) (msg *lib.Msg) {
+	msg = &lib.Msg{}
 	buffer := bytes.NewBuffer(msgBytes)
 	decoder := gob.NewDecoder(buffer)
 	err := decoder.Decode(msg)
 	if err != nil {
 		Logger.Debug("Failed to decode message using Gob: %v", err)
-		msg.Type = ethr.Inv
+		msg.Type = lib.Inv
 	}
 	return
 }
 
-func encodeMsg(msg *ethr.Msg) (msgBytes []byte, err error) {
+func encodeMsg(msg *lib.Msg) (msgBytes []byte, err error) {
 	var writeBuffer bytes.Buffer
 	encoder := gob.NewEncoder(&writeBuffer)
 	err = encoder.Encode(msg)

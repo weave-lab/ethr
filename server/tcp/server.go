@@ -11,13 +11,13 @@ import (
 
 	"weavelab.xyz/ethr/session"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/server"
 )
 
 func Serve(ctx context.Context, cfg *server.Config, h Handler) error {
 	addr := config.GetAddrString(cfg.LocalIP, cfg.LocalPort)
-	l, err := net.Listen(ethr.TCPVersion(cfg.IPVersion), addr)
+	l, err := net.Listen(lib.TCPVersion(cfg.IPVersion), addr)
 	if err != nil {
 		return err
 	}
@@ -73,7 +73,7 @@ func Serve(ctx context.Context, cfg *server.Config, h Handler) error {
 			}
 			rIP := net.ParseIP(remote)
 			rPort, _ := strconv.Atoi(port)
-			test, _ := session.CreateOrGetTest(rIP, uint16(rPort), ethr.TCP, ethr.TestTypeServer, ethr.ClientParams{}, ServerAggregator, time.Second)
+			test, _ := session.CreateOrGetTest(rIP, uint16(rPort), lib.TCP, lib.TestTypeServer, lib.ClientParams{}, ServerAggregator, time.Second)
 			if test == nil {
 				continue
 			}

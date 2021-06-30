@@ -7,7 +7,7 @@ import (
 	"net"
 	"syscall"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 )
 
 func (t Tools) setSockOptInt(fd uintptr, level, opt, val int) error {
@@ -27,13 +27,13 @@ func (t Tools) IsAdmin() bool {
 }
 
 func (t Tools) IcmpNewConn(address string) (net.PacketConn, error) {
-	dialedConn, err := net.Dial(ethr.ICMPVersion(t.IPVersion), address)
+	dialedConn, err := net.Dial(lib.ICMPVersion(t.IPVersion), address)
 	if err != nil {
 		return nil, err
 	}
 	localAddr := dialedConn.LocalAddr()
 	_ = dialedConn.Close()
-	conn, err := net.ListenPacket(ethr.ICMPVersion(t.IPVersion), localAddr.String())
+	conn, err := net.ListenPacket(lib.ICMPVersion(t.IPVersion), localAddr.String())
 	if err != nil {
 		return nil, err
 	}

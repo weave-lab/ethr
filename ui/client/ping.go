@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 
 	"weavelab.xyz/ethr/session"
 	"weavelab.xyz/ethr/session/payloads"
@@ -15,7 +15,7 @@ func (u *UI) PrintPing(test *session.Test, result *session.TestResult) {
 	case payloads.PingPayload:
 		u.PrintPingHeader(test.RemoteIP)
 		u.printPingResult(r.Sent, r.Lost, r.Received)
-		u.Logger.TestResult(ethr.TestTypePing, result.Success, test.ID.Protocol, test.RemoteIP, test.RemotePort, r)
+		u.Logger.TestResult(lib.TestTypePing, result.Success, test.ID.Protocol, test.RemoteIP, test.RemotePort, r)
 		if r.Received > 0 {
 			u.PrintLatencyHeader()
 			fmt.Printf("%s\n", r.Latency)

@@ -3,11 +3,11 @@ package server
 import (
 	"net"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 )
 
 type Config struct {
-	IPVersion ethr.IPVersion
+	IPVersion lib.IPVersion
 	LocalIP   net.IP
 	LocalPort uint16
 }

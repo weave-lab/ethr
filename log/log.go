@@ -5,7 +5,7 @@ import (
 	"net"
 	"time"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 )
 
 type LogLevel int
@@ -58,14 +58,14 @@ func NewMessage(ll LogLevel, msg string) Message {
 
 type TestResultLog struct {
 	Timestamp string
-	Type      ethr.TestType
-	Protocol  ethr.Protocol
+	Type      lib.TestType
+	Protocol  lib.Protocol
 	Remote    string
 	Success   bool
 	Details   interface{}
 }
 
-func NewTestResultLog(tt ethr.TestType, success bool, protocol ethr.Protocol, rIP net.IP, rPort uint16, details interface{}) TestResultLog {
+func NewTestResultLog(tt lib.TestType, success bool, protocol lib.Protocol, rIP net.IP, rPort uint16, details interface{}) TestResultLog {
 	return TestResultLog{
 		Timestamp: time.Now().UTC().Format(time.RFC3339),
 		Type:      tt,

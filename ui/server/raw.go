@@ -3,7 +3,7 @@ package server
 import (
 	"fmt"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/session"
 	"weavelab.xyz/ethr/session/payloads"
 	"weavelab.xyz/ethr/ui"
@@ -32,25 +32,25 @@ func (u *RawUI) Paint(seconds uint64) {
 		return
 	}
 	for _, s := range sessions {
-		tcpResults := u.getTestResults(&s, ethr.TCP, u.tcpStats)
+		tcpResults := u.getTestResults(s, lib.TCP, u.tcpStats)
 		u.printTestResults(tcpResults)
 
-		udpResults := u.getTestResults(&s, ethr.UDP, u.udpStats)
+		udpResults := u.getTestResults(s, lib.UDP, u.udpStats)
 		u.printTestResults(udpResults)
 
-		icmpResults := u.getTestResults(&s, ethr.ICMP, u.icmpStats)
+		icmpResults := u.getTestResults(s, lib.ICMP, u.icmpStats)
 		u.printTestResults(icmpResults)
 	}
 
-	tcpAgg := u.tcpStats.ToString(ethr.TCP)
+	tcpAgg := u.tcpStats.ToString(lib.TCP)
 	u.tcpStats.Reset()
 	u.printTestResults(tcpAgg)
 
-	udpAgg := u.udpStats.ToString(ethr.UDP)
+	udpAgg := u.udpStats.ToString(lib.UDP)
 	u.udpStats.Reset()
 	u.printTestResults(udpAgg)
 
-	icmpAgg := u.icmpStats.ToString(ethr.ICMP)
+	icmpAgg := u.icmpStats.ToString(lib.ICMP)
 	u.icmpStats.Reset()
 	u.printTestResults(icmpAgg)
 }
@@ -62,14 +62,16 @@ func (u *RawUI) printTestHeader() {
 }
 
 func (u *RawUI) printTestResults(results []string) {
-	fmt.Printf("[%13s]  %5s  %7s  %7s  %7s  %8s\n", ui.TruncateStringFromStart(results[0], 13), results[1], results[2], results[3], results[4], results[5])
+	if len(results) > 0 {
+		fmt.Printf("[%13s]  %5s  %7s  %7s  %7s  %8s\n", ui.TruncateStringFromStart(results[0], 13), results[1], results[2], results[3], results[4], results[5])
+	}
 }
 
-func (u *RawUI) getTestResults(s *session.Session, protocol ethr.Protocol, agg *AggregateStats) []string {
+func (u *RawUI) getTestResults(s *session.Session, protocol lib.Protocol, agg *AggregateStats) []string {
 	var bwTestOn, cpsTestOn, ppsTestOn, latTestOn bool
 	var bw, cps, pps uint64
 	var lat payloads.LatencyPayload
-	test, found := s.Tests[ethr.TestID{Protocol: protocol, Type: ethr.TestTypeServer}]
+	test, found := s.Tests[lib.TestID{Protocol: protocol, Type: lib.TestTypeServer}]
 	if found && test.IsActive {
 		result := test.LatestResult()
 		if body, ok := result.Body.(payloads.ServerPayload); ok {
@@ -77,7 +79,7 @@ func (u *RawUI) getTestResults(s *session.Session, protocol ethr.Protocol, agg *
 			bw = body.Bandwidth
 			agg.Bandwidth += body.Bandwidth
 
-			if protocol == ethr.TCP {
+			if protocol == lib.TCP {
 				cpsTestOn = true
 				cps = body.ConnectionsPerSecond
 				agg.ConnectionsPerSecond += body.ConnectionsPerSecond
@@ -90,7 +92,7 @@ func (u *RawUI) getTestResults(s *session.Session, protocol ethr.Protocol, agg *
 				}
 			}
 
-			if protocol == ethr.UDP {
+			if protocol == lib.UDP {
 				ppsTestOn = true
 				pps = body.PacketsPerSecond
 				agg.PacketsPerSecond += body.PacketsPerSecond

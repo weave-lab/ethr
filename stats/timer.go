@@ -4,10 +4,10 @@ import (
 	"sort"
 	"time"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 )
 
-var Logger ethr.Logger
+var Logger lib.Logger
 
 type NetStat struct {
 	Devices []DeviceStats

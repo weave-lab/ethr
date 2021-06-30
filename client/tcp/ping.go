@@ -9,7 +9,7 @@ import (
 
 	"weavelab.xyz/ethr/session/payloads"
 
-	"weavelab.xyz/ethr/ethr"
+	"weavelab.xyz/ethr/lib"
 	"weavelab.xyz/ethr/session"
 )
 
@@ -51,7 +51,7 @@ func (t Tests) TestPing(test *session.Test, g time.Duration, warmupCount uint32)
 
 func (t Tests) DoPing(test *session.Test, prefix string) (time.Duration, error) {
 	t0 := time.Now()
-	conn, err := t.NetTools.Dial(ethr.TCP, test.DialAddr, t.NetTools.LocalIP, 0, 0, 0)
+	conn, err := t.NetTools.Dial(lib.TCP, test.DialAddr, t.NetTools.LocalIP, 0, 0, 0)
 	if err != nil {
 		return 0, fmt.Errorf("%sconnection to %s timed out: %w", prefix, test.DialAddr, err)
 	}
